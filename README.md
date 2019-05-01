@@ -7,6 +7,9 @@ FXyz3D
  - FXyz3D Client: 
 [ ![Download](https://api.bintray.com/packages/jpereda/FXyz3D/fxyz3d-client/images/download.svg) ](https://bintray.com/jpereda/FXyz3D/fxyz3d-client/_latestVersion)
 
+ - FXyz3D Importers: 
+[ ![Download](https://api.bintray.com/packages/jpereda/FXyz3D/fxyz3d-importers/images/download.svg) ](https://bintray.com/jpereda/FXyz3D/fxyz3d-importers/_latestVersion)
+
 A JavaFX 3D Visualization and Component Library
 
 ## How to build
@@ -28,19 +31,30 @@ a 3D mesh of a spring.
 
 ### Sample
 
-Create a gradle project, add the dependency:
+Create a gradle project, edit the build.gradle file and add:
 
 ```
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+mainClassName = 'org.fxyz3d.Sample'
+
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile 'org.fxyz3d:fxyz3d:0.3.0'
+    implementation 'org.fxyz3d:fxyz3d:0.5.0'
+}
+
+javafx {
+    modules = [ 'javafx.controls' ]
 }
 ```
 
-and create a JavaFX Application class: 
+and create a JavaFX Application class `Sample` under the `org.fxyz3d` package: 
 
 ```java
     @Override
@@ -73,6 +87,8 @@ and create a JavaFX Application class:
     }
 ```
 
+Note: For more information on JavaFX 11, check this [link](https://openjfx.io).
+
 ### FXSampler
 
 To use the FXSampler and visualize all the samples and the different options available, run:
@@ -83,6 +99,15 @@ There is a hidden side popup menu at the left, from where different samples can 
 
 ![](/resources/fxsampler.png)
 
+ #### Custom image
+
+You can create a custom image for your platform running:
+
+    ./gradlew clean :FXyz-Samples:jlink  
+
+And you can run it with Java 9+ on your platform:
+
+    FXyz-Samples/build/FXyz/bin/FXyzSamples
 
 Special Thanks go to ControlsFX for providing the FXSampler framework.
 http://fxexperience.com/controlsfx/

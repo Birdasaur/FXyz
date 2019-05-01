@@ -1,0 +1,32 @@
+# use java support.
+language: java
+jdk:
+  - openjdk11
+  
+# run in container.
+sudo: false
+
+# use linux as operating system.
+os:
+  - linux
+
+# imitate a display for RunWithFX tests
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3
+  
+# run maven build.
+script:
+  - ./gradlew build
+
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  
+deploy:
+  provider: script
+  script: ./gradlew bintrayUpload -PbintrayUsername=$bintrayUsername -PbintrayApiKey=$bintrayApiKey
+  skip_cleanup: true
+  on:
+    tags: true

@@ -45,7 +45,8 @@ jar {
                 'Specification-Title': project.name,
                 'Specification-Version': project.version,
                 'Implementation-Title': project.name,
-                'Implementation-Version': project.version
+                'Implementation-Version': project.version,
+                'Automatic-Module-Name' : "org.fxyz3d.client"
         )
     }
 }
@@ -99,6 +100,9 @@ publishing {
 
             pom.withXml {
                 def root = asNode()
+                root.dependencies.'*'
+                        .findAll() { it.groupId.text() == 'org.openjfx' }
+                        .each { it.remove(it.classifier) }
                 root.appendNode 'description', publishing.desc
                 root.children().last() + pomConfig
             }
@@ -106,12 +110,12 @@ publishing {
     }
 }
 
-if (!project.hasProperty('bintrayUsername')) ext.bintrayUsername = ''
-if (!project.hasProperty('bintrayApiKey')) ext.bintrayApiKey = ''
+def bintrayUsername = project.hasProperty('bintrayUsername') ? project.bintrayUsername : ''
+def bintrayApiKey = project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : ''
 
 bintray {
-    user = project.bintrayUsername
-    key = project.bintrayApiKey
+    user = bintrayUsername
+    key = bintrayApiKey
     publications = ['mavenCustom']
     pkg {
         repo                  = publishing.bintray.repo

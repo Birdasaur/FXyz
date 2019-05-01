@@ -1,61 +1,28 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
-    }
-}
-
-plugins {
-    id 'com.github.hierynomus.license' version '0.13.1'
-    id 'maven-publish'
-    id 'net.nemerosa.versioning' version '2.6.1'
-    id 'com.jfrog.bintray' version '1.7.2'
-    id 'com.github.ben-manes.versions' version '0.13.0'
-}
-
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 apply from: 'gradle/publishing.gradle'
 
 repositories {
     jcenter()
 }
 
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 version = fxyz_sampler_version
-apply plugin: 'com.github.johnrengelman.shadow'
 
-configurations {
-    //samples.extendsFrom mainRuntime
-    jdk
-}
-
-sourceSets {
-    main {
-        compileClasspath += configurations.jdk
-    }
-}
-
+sourceCompatibility = '1.9'
+targetCompatibility = '1.9'
+    
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.fxyz3d.client.FXyzClient'
 }
 
 dependencies {    
-    compile 'org.controlsfx:controlsfx:8.40.14'
-    compile 'org.reactfx:reactfx:2.0-M5'    
-    
-    try {
-        jdk files(jfxrtJar)
-    } catch (MissingPropertyException pne) {
-        jdk files("${System.properties['java.home']}/lib/jfxrt.jar")
-        jdk files("${System.properties['java.home']}/lib/ext/jfxrt.jar")
-    }
+    implementation 'org.controlsfx:controlsfx:9.0.0'
+    implementation 'org.reactfx:reactfx:2.0-M5'    
 }
 
 javadoc {
     exclude 'impl/*'
     failOnError = false
-    classpath = project.sourceSets.main.runtimeClasspath + configurations.jdk
     
     options.windowTitle("FXSampler Project ${version}")
     options.links("http://docs.oracle.com/javase/8/docs/api/");
@@ -81,9 +48,6 @@ shadowJar {
     mergeServiceFiles {
         include 'META-INF/services/org.fxyz3d.*'
     }
-    //transform(ServiceFileTransformer) {
-    //path = 'META-INF/services/org.fxyz3d.*'
-    //}
 }
 // sign all generated jars
 //signing {
